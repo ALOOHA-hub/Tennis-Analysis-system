@@ -1,0 +1,9 @@
+settings:
+  model_path: models/yolov8x_traind.pt
+  input_video_path: data/input/video_1.mp4
+  output_path: data/output/output.avi
+  confidence_threshold: 0.25
+  iou_threshold: 0.7
+  stub_path: stubs/track_stubs.pkl
+  team_stub_path: stubs/team_stubs.pkl
+  team_model_path: models/fashion-clip

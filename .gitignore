@@ -1,0 +1,16 @@
+models/*
+!models/note.txt
+venv
+.env
+.vscode
+training/football-players-detection-1
+training/yolo8x.pt
+data/input/*
+data/output/*
+
+# 1. Python Artifacts (Junk)
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env

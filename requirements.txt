@@ -1,0 +1,21 @@
+matplotlib >=3.8.0 # For plotting graphs and images
+pandas >=2.0.0 # For data manipulation and analysis
+
+numpy>=1.24.0          # The backbone of all matrix operations (LogOIC math)
+opencv-python>=4.8.0   # Video decoding/encoding and image resizing
+
+
+ultralytics>=8.1.0     # The fastest wrapper for YOLO models (supports v8-v12)
+supervision>=0.18.0    # Roboflow's library. Contains a pre-built ByteTrack implementation.
+                       # WHY: Writing ByteTrack from scratch is error-prone. This is optimized.
+
+PyYAML>=6.0            # For parsing the config.yaml file
+
+roboflow
+scikit-learn>=1.3.0   # For clustering algorithms
+
+
+# For Team Assignment
+transformers==4.40.0
+torch>=2.4
+numpy>=2.0
