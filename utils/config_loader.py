@@ -18,7 +18,7 @@ class ConfigLoader:
     def _load_config(self):
         # Dynamically find the config file in the root directory
         # Trace: core/utils/config_loader.py -> core/utils/ -> core/ -> root/
-        base_dir = Path(__file__).resolve().parent.parent.parent
+        base_dir = Path(__file__).resolve().parent.parent
         config_path = base_dir / "config.yaml"
 
         if not config_path.exists():

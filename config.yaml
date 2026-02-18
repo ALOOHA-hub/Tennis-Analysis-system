@@ -1,21 +1,25 @@
 system:
   log_level: INFO
-  device: cuda          # Use 'cuda' for GPU, 'cpu' for CPU or 'mps' for Mac
+  device: cuda # Use 'cuda' for GPU, 'cpu' for CPU or 'mps' for Mac
 
 paths:
   input_video: data/input/video_1.mp4
   output_video: data/output/output.avi
-  stub_path: stubs/     # Directory to save/load .pkl files for fast debugging
+  stub_path: stubs/
+  unified_stub: stubs/track_stubs.pkl
+  # --- Legacy Stubs for Migration ---
+  legacy_player_stub: stubs/player_detections.pkl
+  legacy_ball_stub: stubs/ball_detections.pkl # Directory to save/load .pkl files for fast debugging
 
 models:
   player_tracker:
-    model_path: models/yolov8x.pt         # Standard YOLOv8x for person detection
-    confidence_threshold: 0.25
-    
+    model_path: models/yolov8x.pt # Standard YOLOv8x for person detection
+    confidence_threshold: 0.70
+
   ball_tracker:
     model_path: models/yolov8x_ball_trained.pt # Your fine-tuned ball model
-    confidence_threshold: 0.15            # Keep low for fast-moving objects
-    
+    confidence_threshold: 0.15 # Keep low for fast-moving objects
+
   court_detector:
     model_path: models/model_tennis_court_det.pt
 

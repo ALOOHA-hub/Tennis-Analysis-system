@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from core.utils.bbox_utils import get_center_of_bbox, get_bbox_width
+from utils.bbox_utils import get_center_of_bbox, get_bbox_width
 from constants.visual_consts import (
     TEXT_COLOR,
     TEXT_BG_COLOR,

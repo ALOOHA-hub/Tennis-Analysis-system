@@ -1,8 +1,8 @@
 import supervision as sv
 import numpy as np
 import pandas as pd
-from core.utils.logger import logger
-from core.utils.bbox_utils import get_center_of_bbox, get_foot_position
+from utils.logger import logger
+from utils.bbox_utils import get_center_of_bbox, get_foot_position
 from constants import (
     CLASS_PLAYER, 
     CLASS_BALL, 
@@ -22,49 +22,43 @@ class Tracker:
             lost_track_buffer=TRACKER_LOST_BUFFER
         )
 
-    def get_object_tracks(self, detections):
+    def get_object_tracks(self, player_detections, ball_detections):
         logger.info("Assigning tracking IDs to tennis players and extracting ball positions...")
         
-        tracks = {
-            "players": [],
-            "tennis ball": []
-        }
+        tracks = {"players": [], "ball": []}
 
-        for frame_num, detection in enumerate(detections):
-            cls_names = detection.names
-            cls_names_inv = {v: k for k, v in cls_names.items()}
-
-            # Convert to supervision format
-            detection_supervision = sv.Detections.from_ultralytics(detection)
-
-            # Update ByteTrack (assigns persistent IDs to players)
-            detection_with_tracks = self.tracker.update_with_detections(detection_supervision)
+        # Loop through frames based on the length of our detections
+        for frame_num in range(len(player_detections)):
+            # 1. Handle Players (using player_detections)
+            p_det = player_detections[frame_num]
+            p_inv_names = {v: k for k, v in p_det.names.items()}
+            p_supervision = sv.Detections.from_ultralytics(p_det)
+            p_with_tracks = self.tracker.update_with_detections(p_supervision)
             
             tracks["players"].append({})
-            tracks["tennis ball"].append({})
-            
-            # Process tracked players
-            for frame_detection in detection_with_tracks:
+            for frame_detection in p_with_tracks:
                 bbox = frame_detection[0].tolist()
                 cls_id = frame_detection[3]
                 track_id = frame_detection[4]
-
-                if cls_id == cls_names_inv.get(CLASS_PLAYER):
+                if cls_id == p_inv_names.get(CLASS_PLAYER):
                     tracks["players"][frame_num][track_id] = {"bbox": bbox}
 
-            # Process the ball (No tracking ID needed, just grab the bbox for interpolation)
-            for frame_detection in detection_supervision:
+            # 2. Handle Ball (using ball_detections)
+            b_det = ball_detections[frame_num]
+            b_inv_names = {v: k for k, v in b_det.names.items()}
+            b_supervision = sv.Detections.from_ultralytics(b_det)
+            
+            tracks["ball"].append({})
+            for frame_detection in b_supervision:
                 bbox = frame_detection[0].tolist()
                 cls_id = frame_detection[3]
-
-                if cls_id == cls_names_inv.get(CLASS_BALL):
-                    tracks["tennis ball"][frame_num][1] = {"bbox": bbox}
+                if cls_id == b_inv_names.get(CLASS_BALL):
+                    tracks["ball"][frame_num][1] = {"bbox": bbox}
 
         logger.info("Tracking complete. Interpolating ball positions...")
-        tracks["tennis ball"] = self.interpolate_ball_positions(tracks["tennis ball"])
-
+        tracks["ball"] = self.interpolate_ball_positions(tracks["ball"])
         return tracks
-    
+
     def interpolate_ball_positions(self, ball_positions):
         # 1. Convert to DataFrame
         processed_positions = []

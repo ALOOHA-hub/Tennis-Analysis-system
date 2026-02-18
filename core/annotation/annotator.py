@@ -1,6 +1,6 @@
 import cv2
 from .entity_annotator import EntityAnnotator
-from core.utils.logger import logger
+from utils.logger import logger
 from constants.visual_consts import PLAYER_COLOR, BALL_COLOR
 
 class Annotator:

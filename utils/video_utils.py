@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from typing import List
-from core.utils.logger import logger
+from utils.logger import logger
 
 def read_video(video_path: str) -> List[np.ndarray]:
     """Reads a video and returns a list of frames."""
