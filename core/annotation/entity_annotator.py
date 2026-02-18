@@ -80,3 +80,33 @@ class EntityAnnotator:
             cv2.putText(frame, str(i//2), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
         return frame
+
+
+    def draw_player_speed_and_distance(self, frame, bbox, speed, distance):
+        y2 = int(bbox[3])
+        x_center, _ = get_center_of_bbox(bbox)
+        
+        # Draw Speed (Adjusted Y offset slightly to hover cleanly above distance)
+        if speed is not None:
+            cv2.putText(
+                frame,
+                f"{speed:.1f} km/h",
+                (int(x_center) - 40, int(y2) + 25), 
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                TEXT_COLOR,
+                2
+            )
+        
+        # Draw Distance
+        if distance is not None:
+            cv2.putText(
+                frame,
+                f"{distance:.1f} m",
+                (int(x_center) - 30, int(y2) + 45), 
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                TEXT_COLOR,
+                2
+            )
+        return frame

@@ -6,6 +6,8 @@ from utils.config_loader import cfg
 from core.trackers import Tracker
 from core.annotation import Annotator
 from core.detection import CourtDetector
+from core.analysis import PhysicsEngine
+from core.annotation import MiniCourt
 
 class Pipeline:
     def __init__(self, input_video_path: str, output_video_path: str):
@@ -20,33 +22,42 @@ class Pipeline:
     def run(self):
         logger.info("--- Starting Tennis Analysis Pipeline ---")
         
-        # Step 1: Read Video
         video_frames = read_video(self.input_video_path)
-        if not video_frames:
-            logger.error("No frames loaded. Exiting pipeline.")
-            return
+        if not video_frames: return
 
-        # Step 2: Get Detections & Tracks (Uses stub if available to save time!)
+        # 1. Base Tracking
         tracks = self._get_tracks(video_frames)
-        if tracks is None:
-            logger.error("Failed to load or generate tracks. Exiting pipeline.")
-            return
         
-        # Step 3: Court Detection (Placeholder for next phase)
+        # 2. Court Detection & Filtering
+        logger.info("Detecting court lines...")
         court_keypoints = self.court_detector.predict(video_frames[0])
-        
-        # Step 4: Add Spatial Positions (Center of ball, feet of players)
+        tracks = self.tracker.choose_and_filter_players(court_keypoints, tracks)
         tracks = self.tracker.add_position_to_tracks(tracks)
         
-        # Step 5: Draw Annotations (Circles and Triangles)
-        annotated_frames = self.annotator.draw_annotations(video_frames, tracks, court_keypoints=court_keypoints)
+        # 3. Phase 4: Mini-Court Projection
+        logger.info("Projecting tracking coordinates to 2D Mini-Court...")
+        mini_court = MiniCourt(video_frames[0])
+        tracks = mini_court.convert_bounding_boxes_to_mini_court_coordinates(tracks, court_keypoints)
+
+       # 4. Phase 5: Physics & Analytics
+        logger.info("Calculating player real-world speeds and distances...")
         
-        # Step 6: Save Video
-        fps = cfg['video'].get('fps', 24.0) if 'video' in cfg else 24.0
+        # FIX: Use the global 'cfg' we imported at the top of the file
+        fps = cfg.get('video', {}).get('fps', 24.0) 
+        
+        physics = PhysicsEngine(fps, mini_court.court_drawing_width)
+        tracks = physics.add_speed_and_distance_to_tracks(tracks)
+        # 5. Draw Everything
+        annotated_frames = self.annotator.draw_annotations(
+            video_frames, 
+            tracks, 
+            court_keypoints=court_keypoints,
+            mini_court=mini_court
+        )
+        
         logger.info("Pipeline processing complete. Moving to save step.")
         save_video(annotated_frames, self.output_video_path, fps=fps)
-        
-        logger.info("--- Pipeline Execution Finished Successfully ---")
+        logger.info("---Pipeline Completed Successfully---")
 
     def _get_tracks(self, video_frames):
         """Runs tracking, loads unified stub, or migrates old legacy stubs."""
