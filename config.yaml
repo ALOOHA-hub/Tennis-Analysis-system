@@ -1,9 +1,24 @@
-settings:
-  model_path: models/yolov8x_traind.pt
-  input_video_path: data/input/video_1.mp4
-  output_path: data/output/output.avi
-  confidence_threshold: 0.25
-  iou_threshold: 0.7
-  stub_path: stubs/track_stubs.pkl
-  team_stub_path: stubs/team_stubs.pkl
-  team_model_path: models/fashion-clip
+system:
+  log_level: INFO
+  device: cuda          # Use 'cuda' for GPU, 'cpu' for CPU or 'mps' for Mac
+
+paths:
+  input_video: data/input/video_1.mp4
+  output_video: data/output/output.avi
+  stub_path: stubs/     # Directory to save/load .pkl files for fast debugging
+
+models:
+  player_tracker:
+    model_path: models/yolov8x_trained.pt
+    confidence_threshold: 0.25
+    iou_threshold: 0.7
+    
+  ball_tracker:
+    model_path: models/yolo5_last.pt  # The custom model you trained
+    confidence_threshold: 0.15
+    
+  court_detector:
+    model_path: models/keypoints_model.pth # The ResNet model you trained
+
+video:
+  fps: 24.0

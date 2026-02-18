@@ -14,3 +14,15 @@ __pycache__/
 *$py.class
 venv/
 .env
+*.pyc
+
+# Data and Models
+data/
+stubs/
+*.mp4
+*.avi
+*.pt
+*.pth
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/

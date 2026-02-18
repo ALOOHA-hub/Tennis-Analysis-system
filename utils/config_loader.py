@@ -1,5 +1,4 @@
 import yaml
-import os
 from pathlib import Path
 
 class ConfigLoader:
@@ -17,20 +16,21 @@ class ConfigLoader:
         return cls._instance
 
     def _load_config(self):
-        # Dynamically find the config file relative to this script
-        base_dir = Path(__file__).resolve().parent.parent
+        # Dynamically find the config file in the root directory
+        # Trace: core/utils/config_loader.py -> core/utils/ -> core/ -> root/
+        base_dir = Path(__file__).resolve().parent.parent.parent
         config_path = base_dir / "config.yaml"
 
         if not config_path.exists():
-            raise FileNotFoundError(f"[CRITICAL] Config file missing at: {config_path}")
+            raise FileNotFoundError(f"[CRITICAL BOOTSTRAP] Config file missing at: {config_path}")
         
         with open(config_path, 'r') as f:
             self._config = yaml.safe_load(f)
-            print(f"[SYSTEM] Configuration loaded from {config_path}")
+            print(f"[BOOTSTRAP] Configuration loaded successfully from {config_path}")
 
     @property
     def config(self):
         return self._config
 
-# Expose a single global instance
+# Expose a single global instance dictionary
 cfg = ConfigLoader().config
