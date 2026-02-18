@@ -106,7 +106,14 @@ class CourtDetector:
         logger.info("Court Detector loaded successfully.")
 
     def predict(self, image):
-        """Processes a single frame and returns 14 court keypoints as a flat array [x0,y0,x1,y1,...]."""
+        """Processes a single frame and returns 14 court keypoints dynamically scaled."""
+        # 1. Get the actual original video dimensions
+        original_h, original_w = image.shape[:2]
+        
+        # 2. Calculate dynamic scale ratios (Original vs Model Input)
+        width_ratio = original_w / self.INPUT_WIDTH
+        height_ratio = original_h / self.INPUT_HEIGHT
+
         # Resize to model input size
         img = cv2.resize(image, (self.INPUT_WIDTH, self.INPUT_HEIGHT))
         inp = (img.astype(np.float32) / 255.0)
@@ -127,8 +134,9 @@ class CourtDetector:
                 param1=50, param2=2, minRadius=10, maxRadius=25
             )
             if circles is not None:
-                x_pred = circles[0][0][0] * self.SCALE
-                y_pred = circles[0][0][1] * self.SCALE
+                # 3. Apply the dynamic ratios instead of the hardcoded SCALE=2
+                x_pred = circles[0][0][0] * width_ratio
+                y_pred = circles[0][0][1] * height_ratio
                 points.extend([x_pred, y_pred])
             else:
                 # Use NaN for missing keypoints
