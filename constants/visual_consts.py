@@ -19,3 +19,12 @@ TRIANGLE_Y_OFFSET = 15
 # --- Font Settings ---
 FONT_SCALE = 0.5
 FONT_THICKNESS = 1
+
+# --- Mini-Court Radar Settings ---
+RADAR_WIDTH = 400
+RADAR_HEIGHT = 800
+RADAR_PADDING = 40
+RADAR_BG_COLOR = (45, 125, 45)       # Dark green court background
+RADAR_LINE_COLOR = (255, 255, 255)   # White court lines
+RADAR_PLAYER_COLOR = (0, 0, 255)     # Red dots for players
+RADAR_BALL_COLOR = (0, 255, 255)     # Yellow dot for the ball

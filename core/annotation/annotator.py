@@ -32,7 +32,11 @@ class Annotator:
             if court_keypoints is not None:
                 frame = self.entity_annotator.draw_court_keypoints(frame, court_keypoints)
 
-            # TODO: Phase 4 - Draw Player Speeds Overlay
+            # 4. DRAW THE RADAR MAP
+            if court_keypoints is not None:
+                frame = self.mini_court.draw_radar(frame, player_dict, ball_dict, court_keypoints)
+            
+            # TODO: Phase 5 - Draw Player Speeds Overlay
 
             output_video_frames.append(frame)
             
