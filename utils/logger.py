@@ -2,7 +2,7 @@ import logging
 import sys
 from .config_loader import cfg
 
-def setup_logger(name="Violence Action Detection"):
+def setup_logger(name="TennisSystem"):
     """
     Sets up a standardized logger with formatting.
     Format: [TIME] [LEVEL] [MODULE]: Message
@@ -22,8 +22,9 @@ def setup_logger(name="Violence Action Detection"):
     handler = logging.StreamHandler(sys.stdout)
     
     # Define Format
+    # CHANGED: Replaced %(name)s with %(module)s to dynamically show the calling file
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(levelname)s] [%(name)s]: %(message)s',
+        '[%(asctime)s] [%(levelname)s] [%(module)s]: %(message)s',
         datefmt='%H:%M:%S'
     )
     
