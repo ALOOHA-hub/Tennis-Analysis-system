@@ -105,6 +105,55 @@ class Tracker:
 
         return final_positions
 
+    def choose_and_filter_players(self, court_keypoints, tracks):
+        """Filters out the audience/umpires, keeping only the 2 actual players."""
+        logger.info("Filtering audience/umpires based on spatial distance to court lines...")
+        
+        # Use the first frame to identify the two players
+        player_detections_first_frame = tracks["players"][0]
+        chosen_players = self._choose_players(court_keypoints, player_detections_first_frame)
+        
+        # Rebuild the tracks dictionary keeping only the chosen IDs
+        filtered_player_tracks = []
+        for player_dict in tracks["players"]:
+            filtered_player_dict = {
+                track_id: bbox_data 
+                for track_id, bbox_data in player_dict.items() 
+                if track_id in chosen_players
+            }
+            filtered_player_tracks.append(filtered_player_dict)
+            
+        tracks["players"] = filtered_player_tracks
+        return tracks
+
+    def _choose_players(self, court_keypoints, player_dict):
+        """Calculates distance from people to court lines to find the 2 players."""
+        import math
+        from utils.bbox_utils import get_center_of_bbox
+        
+        distances = []
+        for track_id, track_info in player_dict.items():
+            player_center = get_center_of_bbox(track_info['bbox'])
+
+            min_distance = float('inf')
+            # Loop through all 14 court keypoints (stored as x,y,x,y...)
+            for i in range(0, len(court_keypoints), 2):
+                court_point = (court_keypoints[i], court_keypoints[i+1])
+                distance = math.dist(player_center, court_point)
+                if distance < min_distance:
+                    min_distance = distance
+                    
+            distances.append((track_id, min_distance))
+        
+        # Sort by shortest distance to the court
+        distances.sort(key=lambda x: x[1])
+        
+        # Safeguard: Ensure we have at least 2 detections before selecting
+        if len(distances) >= 2:
+            return [distances[0][0], distances[1][0]]
+        else:
+            return [d[0] for d in distances]
+
     @staticmethod
     def add_position_to_tracks(tracks):
         logger.info("Calculating real-world spatial positions (feet/center) for players and ball...")

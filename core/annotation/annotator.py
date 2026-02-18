@@ -9,7 +9,7 @@ class Annotator:
         self.entity_annotator = EntityAnnotator()
         # self.stats_annotator = StatsAnnotator() # To be implemented in Phase 4 (speeds/distances)
     
-    def draw_annotations(self, video_frames, tracks):
+    def draw_annotations(self, video_frames, tracks, court_keypoints=None):
         logger.info("Drawing visual annotations onto video frames...")
         output_video_frames = []
         
@@ -28,7 +28,11 @@ class Annotator:
             for track_id, ball in ball_dict.items():
                 frame = self.entity_annotator.draw_triangle(frame, ball["bbox"], BALL_COLOR)
 
-            # TODO: Phase 4 - Draw Court Keypoints and Player Speeds Overlay
+            # 3. Draw Court Keypoints if provided
+            if court_keypoints is not None:
+                frame = self.entity_annotator.draw_court_keypoints(frame, court_keypoints)
+
+            # TODO: Phase 4 - Draw Player Speeds Overlay
 
             output_video_frames.append(frame)
             

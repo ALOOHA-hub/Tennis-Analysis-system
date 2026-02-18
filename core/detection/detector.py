@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 from constants import DETECTION_BATCH_SIZE, DETECTION_CONFIDENCE_THRESHOLD
-from core.utils.logger import logger
+from utils.logger import logger
 
 class Detector:
     def __init__(self, model_path):

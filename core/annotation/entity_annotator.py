@@ -62,3 +62,14 @@ class EntityAnnotator:
         cv2.drawContours(frame, [triangle_points], 0, color, cv2.FILLED)
         cv2.drawContours(frame, [triangle_points], 0, TEXT_COLOR, 1) # Black border for visibility
         return frame
+    
+    def draw_court_keypoints(self, frame, keypoints, color=(0, 0, 255)):
+        """Draws the 14 structural keypoints of the tennis court."""
+        for i in range(0, len(keypoints), 2):
+            x = int(keypoints[i])
+            y = int(keypoints[i+1])
+            # Draw a red dot for the keypoint
+            cv2.circle(frame, (x, y), 5, color, -1)
+            # Draw the index number above the dot
+            cv2.putText(frame, str(i//2), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        return frame

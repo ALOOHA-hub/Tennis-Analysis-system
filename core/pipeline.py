@@ -5,6 +5,7 @@ from utils.logger import logger
 from utils.config_loader import cfg
 from core.trackers import Tracker
 from core.annotation import Annotator
+from core.detection import CourtDetector
 
 class Pipeline:
     def __init__(self, input_video_path: str, output_video_path: str):
@@ -12,6 +13,7 @@ class Pipeline:
         self.output_video_path = output_video_path        
         self.tracker = Tracker()
         self.annotator = Annotator()
+        self.court_detector = CourtDetector(cfg['models']['court_detector']['model_path'])
         # We will load our YOLO trackers and ResNet court detectors here in Phase 2
         logger.info("Tennis Analysis Pipeline initialized.")
 
@@ -31,13 +33,13 @@ class Pipeline:
             return
         
         # Step 3: Court Detection (Placeholder for next phase)
-        # court_keypoints = self.court_detector.predict(video_frames[0])
+        court_keypoints = self.court_detector.predict(video_frames[0])
         
         # Step 4: Add Spatial Positions (Center of ball, feet of players)
         tracks = self.tracker.add_position_to_tracks(tracks)
         
         # Step 5: Draw Annotations (Circles and Triangles)
-        annotated_frames = self.annotator.draw_annotations(video_frames, tracks)
+        annotated_frames = self.annotator.draw_annotations(video_frames, tracks, court_keypoints=court_keypoints)
         
         # Step 6: Save Video
         fps = cfg['video'].get('fps', 24.0) if 'video' in cfg else 24.0
