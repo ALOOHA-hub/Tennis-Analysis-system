@@ -9,16 +9,15 @@ paths:
 
 models:
   player_tracker:
-    model_path: models/yolov8x_trained.pt
+    model_path: models/yolov8x.pt         # Standard YOLOv8x for person detection
     confidence_threshold: 0.25
-    iou_threshold: 0.7
     
   ball_tracker:
-    model_path: models/yolo5_last.pt  # The custom model you trained
-    confidence_threshold: 0.15
+    model_path: models/yolov8x_ball_trained.pt # Your fine-tuned ball model
+    confidence_threshold: 0.15            # Keep low for fast-moving objects
     
   court_detector:
-    model_path: models/keypoints_model.pth # The ResNet model you trained
+    model_path: models/model_tennis_court_det.pt
 
 video:
   fps: 24.0

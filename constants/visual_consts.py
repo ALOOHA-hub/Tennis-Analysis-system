@@ -1,0 +1,21 @@
+"""Constants related to the visual annotations (colors, shapes, text)."""
+
+# --- Colors (B, G, R) ---
+PLAYER_COLOR = (0, 255, 0)      # Green for players
+BALL_COLOR = (0, 255, 255)      # Yellow for the tennis ball
+TEXT_COLOR = (0, 0, 0)          # Black text
+TEXT_BG_COLOR = (255, 255, 255) # White background for text
+
+# --- Ellipse Settings (Player Feet) ---
+ELLIPSE_HEIGHT_RATIO = 0.2
+ELLIPSE_START_ANGLE = 45
+ELLIPSE_END_ANGLE = 235
+ELLIPSE_THICKNESS = 2
+
+# --- Triangle Settings (Ball Marker) ---
+TRIANGLE_SIZE = 10
+TRIANGLE_Y_OFFSET = 15
+
+# --- Font Settings ---
+FONT_SCALE = 0.5
+FONT_THICKNESS = 1
